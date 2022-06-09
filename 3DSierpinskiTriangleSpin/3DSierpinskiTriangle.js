@@ -3,10 +3,14 @@
 var canvas;
 var gl;
 
+var theta = Math.PI / 2;
+var dtheta = Math.PI / 180;
+
 var points = [];
 var colors = [];
 
 var NumTimesToSubdivide = 3;
+var thetaLoc;
 
 window.onload = function init() {
     canvas = document.getElementById("gl-canvas");
@@ -66,6 +70,8 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
+    thetaLoc = gl.getUniformLocation(program, "theta");
+
     render();
 };
 
@@ -77,7 +83,7 @@ function triangle(a, b, c, color) {
         vec3(1.0, 0.0, 0.0),
         vec3(0.0, 1.0, 0.0),
         vec3(0.0, 0.0, 1.0),
-        vec3(0.0, 0.0, 0.0)
+        vec3(1.0, 1.0, 0.0)
     ];
 
     colors.push(baseColors[color]);
@@ -129,4 +135,12 @@ function divideTetra(a, b, c, d, count) {
 function render() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, points.length);
+
+    setTimeout(function () {
+
+        theta += 1 * dtheta;
+
+        gl.uniform1f(thetaLoc, theta);
+        requestAnimFrame(render);
+    }, 8);
 }
